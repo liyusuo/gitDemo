@@ -1,1 +1,1 @@
-console.log(666);
+console.log("main 第一次");
