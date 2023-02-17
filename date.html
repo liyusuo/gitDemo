@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .div1 {
+        padding: 100px;
+        background-color: pink;
+      }
+      #cb-dialog-1 {
+        height: 200px;
+        background-color: aquamarine;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="div1" tabindex="0">
+      <input
+        id="inputDate"
+        type="text"
+        role="combobox"
+        aria-expanded="false"
+        aria-haspopup="dialog"
+        aria-controls="cb-dialog-1"
+      />
+    </div>
+    <div>
+      <div tabindex="0">1</div>
+      <div tabindex="0">2</div>
+      <div tabindex="0">3</div>
+    </div>
+    <div
+      id="cb-dialog-1"
+      role="dialog"
+      aria-modal="true"
+      aria-label="选择日期"
+      tabindex="0"
+    >
+      <div tabindex="0">alert1</div>
+      <div tabindex="0">alert2</div>
+      <div tabindex="0">alert3</div>
+      <div id="ok" tabindex="0">ok</div>
+    </div>
+
+    <script>
+      const InputRef = document.getElementById("inputDate");
+      const dateBox = document.getElementById("cb-dialog-1");
+      const okBox = document.getElementById("ok");
+      console.log("InputRef", InputRef);
+      //   window.addEventListener("keydown", (e) => {
+      //     console.log(e);
+      //   });
+      InputRef.onkeydown = (e) => {
+        dateBox.style.display = "block";
+        dateBox.style.zIndex = 2;
+        InputRef.setAttribute("aria-expanded", "true");
+        dateBox.focus();
+      };
+
+      InputRef.onfocus = (e) => {
+        // event.currentTarget.parentNode.classList.add("focus");
+      };
+      dateBox.onfocus = (e) => {
+        // event.currentTarget.parentNode.classList.add("focus");
+        console.log(e);
+      };
+      okBox.onkeydown = (e) => {
+        var flag = false;
+
+        switch (e.type) {
+          case "keydown":
+            switch (e.key) {
+              case "Tab":
+                if (!e.shiftKey) {
+                  dateBox.focus();
+                  flag = true;
+                }
+                break;
+
+              case "Esc":
+              case "Escape":
+                flag = true;
+                break;
+
+              default:
+                break;
+            }
+            break;
+
+          case "click":
+            this.setComboboxDate();
+            this.close();
+            flag = true;
+            break;
+
+          default:
+            break;
+        }
+
+        if (flag) {
+          e.stopPropagation();
+          e.preventDefault();
+        }
+      };
+    </script>
+  </body>
+</html>

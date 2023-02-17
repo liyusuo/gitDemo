@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .combobox-datepicker {
+        margin-top: 1em;
+        position: relative;
+      }
+
+      .combobox-datepicker .group {
+        display: inline-flex;
+        position: relative;
+        width: 12.125rem;
+      }
+
+      .combobox-datepicker label {
+        display: block;
+      }
+
+      .combobox-datepicker .group input,
+      .combobox-datepicker .group button {
+        background-color: white;
+        color: black;
+        box-sizing: border-box;
+        height: 1.75rem;
+        padding: 0;
+        margin: 0;
+        vertical-align: bottom;
+        border: 1px solid gray;
+        position: relative;
+      }
+
+      .combobox-datepicker .group input {
+        width: 10.75rem;
+        border-right: none;
+        outline: none;
+        font-size: 87.5%;
+        padding: 0.1em 0.3em;
+      }
+
+      .combobox-datepicker .group button {
+        position: absolute;
+        left: 10.75rem;
+        padding-right: 0.125rem;
+        border-left: none;
+        outline: none;
+      }
+
+      .combobox-datepicker .group .desc {
+        position: absolute;
+        top: 2em;
+        left: 0;
+        margin-top: 0.1em;
+        font-size: 90%;
+        font-style: italic;
+        letter-spacing: 0.025em;
+      }
+
+      .combobox-datepicker .group.focus {
+        outline: 2px solid pink;
+        outline-offset: 2px;
+      }
+
+      .combobox-datepicker .dialog button {
+        border-style: none;
+        background: transparent;
+      }
+
+      .combobox-datepicker .dialog-ok-cancel-group button {
+        padding: 6px;
+        margin-left: 1em;
+        width: 5em;
+        background-color: hsl(216deg 80% 92%);
+        font-size: 0.85em;
+        color: black;
+        outline: none;
+        border-radius: 5px;
+      }
+
+      .combobox-datepicker .dialog button::-moz-focus-inner {
+        border: 0;
+      }
+
+      .combobox-datepicker .group.focus input,
+      .combobox-datepicker .group.focus button {
+        background-color: #def;
+      }
+
+      .combobox-datepicker .group polygon {
+        fill: gray;
+        stroke: transparent;
+      }
+
+      .combobox-datepicker .group.focus polygon,
+      .combobox-datepicker .group button[aria-expanded="true"] polygon {
+        fill: black;
+        stroke: white;
+      }
+
+      .combobox-datepicker .group button.open svg {
+        transform: rotate(180deg) translate(0, -1px);
+      }
+
+      .combobox-datepicker .dialog {
+        position: absolute;
+        width: 320px;
+        clear: both;
+        border: 3px solid hsl(216deg 80% 51%);
+        margin-top: 1em;
+        border-radius: 5px;
+        padding: 0;
+        background-color: #fff;
+      }
+
+      .combobox-datepicker .header {
+        cursor: default;
+        background-color: hsl(216deg 80% 51%);
+        padding: 7px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: white;
+        display: flex;
+        justify-content: space-around;
+      }
+
+      .combobox-datepicker .dialog h2 {
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+        font-size: 1em;
+        color: white;
+        text-transform: none;
+        font-weight: bold;
+      }
+
+      .combobox-datepicker .dates {
+        width: 320px;
+        padding-left: 1em;
+        padding-right: 1em;
+        padding-top: 1em;
+      }
+
+      .combobox-datepicker .prev-year,
+      .combobox-datepicker .prev-month,
+      .combobox-datepicker .next-month,
+      .combobox-datepicker .next-year {
+        padding: 4px;
+        width: 24px;
+        height: 24px;
+        color: white;
+      }
+
+      .combobox-datepicker .prev-year:focus,
+      .combobox-datepicker .prev-month:focus,
+      .combobox-datepicker .next-month:focus,
+      .combobox-datepicker .next-year:focus {
+        padding: 2px;
+        border: 2px solid white;
+        border-radius: 4px;
+        outline: 0;
+      }
+
+      .combobox-datepicker .prev-year:hover,
+      .combobox-datepicker .prev-month:hover,
+      .combobox-datepicker .next-month:hover,
+      .combobox-datepicker .next-year:hover {
+        padding: 3px;
+        border: 1px solid white;
+        border-radius: 4px;
+        outline: 0;
+      }
+
+      .combobox-datepicker .dialog-ok-cancel-group {
+        text-align: right;
+        margin-top: 1em;
+        margin-bottom: 1em;
+        margin-right: 1em;
+      }
+
+      .combobox-datepicker .dialog-button:focus {
+        padding: 4px;
+        border: 2px solid black;
+      }
+
+      .combobox-datepicker .dialog-button:hover {
+        padding: 5px;
+        border: 1px solid black;
+      }
+
+      .combobox-datepicker .fa-calendar-alt {
+        color: hsl(216deg 89% 51%);
+      }
+
+      .combobox-datepicker .month-year {
+        display: inline-block;
+        width: 12em;
+        text-align: center;
+      }
+
+      .combobox-datepicker .dates th,
+      .combobox-datepicker .dates td {
+        text-align: center;
+      }
+
+      .combobox-datepicker .dates tr {
+        border: 1px solid black;
+      }
+
+      .combobox-datepicker .dates td {
+        padding: 3px;
+        margin: 0;
+        line-height: inherit;
+        height: 40px;
+        width: 40px;
+        border-radius: 5px;
+        font-size: 15px;
+        background: #eee;
+      }
+
+      .combobox-datepicker .dates td[aria-selected] {
+        padding: 1px;
+        border: 2px dotted black;
+        background-color: hsl(216deg 80% 96%);
+      }
+
+      .combobox-datepicker .dates td[tabindex="0"] {
+        background-color: hsl(216deg 80% 51%);
+        color: white;
+      }
+
+      .combobox-datepicker .dates td:hover {
+        padding: 0;
+        background-color: hsl(216deg 80% 92%);
+      }
+
+      .combobox-datepicker .dates td:focus {
+        padding: 1px;
+        border: 2px solid rgb(100 100 100);
+        outline: 0;
+      }
+
+      .combobox-datepicker .dates td:not(.disabled):hover {
+        padding: 2px;
+        border: 1px solid rgb(100 100 100);
+      }
+
+      .combobox-datepicker .dialog-message {
+        padding-top: 0.25em;
+        padding-left: 1em;
+        height: 1.75em;
+        background: hsl(216deg 80% 51%);
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="myDatepicker" class="combobox-datepicker">
+      <div class="label">
+        <label id="id-label-1" for="cb-textbox-1"> Date </label>
+      </div>
+
+      <div class="group">
+        <input
+          type="text"
+          id="cb-textbox-1"
+          aria-autocomplete="none"
+          role="combobox"
+          aria-expanded="false"
+          aria-haspopup="dialog"
+          aria-controls="cb-dialog-1"
+          aria-describedby="cb-description-1"
+        />
+
+        <span class="desc" id="cb-description-1"
+          >(date format: mm/dd/yyyy)</span
+        >
+        <button
+          type="button"
+          class="arrow"
+          tabindex="-1"
+          aria-label="Choose Date"
+        >
+          <span>
+            <svg width="18" height="16" aria-hidden="true" focusable="false">
+              <polygon points="2,4 16,4 9,14"></polygon>
+            </svg>
+          </span>
+        </button>
+      </div>
+      <div tabindex="0">1</div>
+      <div tabindex="0">1</div>
+      <div tabindex="0">1</div>
+      <div
+        id="cb-dialog-1"
+        class="dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Choose Date"
+      >
+        <div class="header">
+          <button type="button" class="prev-year" aria-label="previous year">
+            <span class="fas fa-angle-double-left fa-lg"></span>
+          </button>
+
+          <button type="button" class="prev-month" aria-label="previous month">
+            <span class="fas fa-angle-left fa-lg"></span>
+          </button>
+
+          <h2 id="cb-grid-label" class="month-year" aria-live="polite">
+            December 2020
+          </h2>
+
+          <button type="button" class="next-month" aria-label="next month">
+            <span class="fas fa-angle-right fa-lg"></span>
+          </button>
+
+          <button type="button" class="next-year" aria-label="next year">
+            <span class="fas fa-angle-double-right fa-lg"></span>
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="dates" role="grid" aria-labelledby="cb-grid-label">
+            <thead>
+              <tr>
+                <th scope="col" abbr="Sunday">Su</th>
+                <th scope="col" abbr="Monday">Mo</th>
+                <th scope="col" abbr="Tuesday">Tu</th>
+                <th scope="col" abbr="Wednesday">We</th>
+                <th scope="col" abbr="Thursday">Th</th>
+                <th scope="col" abbr="Friday">Fr</th>
+                <th scope="col" abbr="Saturday">Sa</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="disabled" tabindex="-1"></td>
+                <td class="disabled" tabindex="-1"></td>
+                <td class="disabled" tabindex="-1"></td>
+                <td class="disabled" tabindex="-1"></td>
+                <td class="disabled" tabindex="-1"></td>
+                <td class="disabled" tabindex="-1"></td>
+                <td tabindex="-1" data-date="2020-02-01">1</td>
+              </tr>
+              <tr>
+                <td tabindex="-1" data-date="2020-02-02">2</td>
+                <td tabindex="-1" data-date="2020-02-03">3</td>
+                <td tabindex="-1" data-date="2020-02-04">4</td>
+                <td tabindex="-1" data-date="2020-02-05">5</td>
+                <td tabindex="-1" data-date="2020-02-06">6</td>
+                <td tabindex="-1" data-date="2020-02-07">7</td>
+                <td tabindex="-1" data-date="2020-02-08">8</td>
+              </tr>
+              <tr>
+                <td tabindex="-1" data-date="2020-02-09">9</td>
+                <td tabindex="-1" data-date="2020-02-10">10</td>
+                <td tabindex="-1" data-date="2020-02-11">11</td>
+                <td tabindex="-1" data-date="2020-02-12">12</td>
+                <td tabindex="-1" data-date="2020-02-13">13</td>
+                <td role="gridcell" aria-selected="true" data-date="2020-02-14">
+                  14
+                </td>
+                <td tabindex="-1" data-date="2020-02-15">15</td>
+              </tr>
+              <tr>
+                <td tabindex="-1" data-date="2020-02-16">16</td>
+                <td tabindex="-1" data-date="2020-02-17">17</td>
+                <td tabindex="-1" data-date="2020-02-18">18</td>
+                <td tabindex="-1" data-date="2020-02-19">19</td>
+                <td tabindex="-1" data-date="2020-02-20">20</td>
+                <td tabindex="-1" data-date="2020-02-21">21</td>
+                <td tabindex="-1" data-date="2020-02-22">22</td>
+              </tr>
+              <tr>
+                <td tabindex="-1" data-date="2020-02-23">23</td>
+                <td tabindex="-1" data-date="2020-02-24">24</td>
+                <td tabindex="-1" data-date="2020-02-25">25</td>
+                <td tabindex="-1" data-date="2020-02-26">26</td>
+                <td tabindex="-1" data-date="2020-02-27">27</td>
+                <td tabindex="-1" data-date="2020-02-28">28</td>
+                <td tabindex="-1" data-date="2020-02-29">29</td>
+              </tr>
+              <tr>
+                <td tabindex="-1" data-date="2020-02-30">30</td>
+                <td tabindex="-1" data-date="2020-02-31">31</td>
+                <td class="disabled" tabindex="-1"></td>
+                <td class="disabled" tabindex="-1"></td>
+                <td class="disabled" tabindex="-1"></td>
+                <td class="disabled" tabindex="-1"></td>
+                <td class="disabled" tabindex="-1"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="dialog-ok-cancel-group">
+          <button class="dialog-button" value="cancel">Cancel</button>
+          <button class="dialog-button" value="ok">OK</button>
+        </div>
+
+        <div class="dialog-message" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <script>
+      class ComboboxDatePicker {
+        constructor(cdp) {
+          console.log("cdp", cdp);
+          this.buttonLabel = "Date";
+          this.monthLabels = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+
+          this.messageCursorKeys = "Cursor keys can navigate dates";
+          this.lastMessage = "";
+
+          this.comboboxNode = cdp.querySelector('input[type="text"]');
+          this.buttonNode = cdp.querySelector(".group button");
+          this.dialogNode = cdp.querySelector('[role="dialog"]');
+          this.messageNode = this.dialogNode.querySelector(".dialog-message");
+
+          this.monthYearNode = this.dialogNode.querySelector(".month-year");
+
+          this.prevYearNode = this.dialogNode.querySelector(".prev-year");
+          this.prevMonthNode = this.dialogNode.querySelector(".prev-month");
+          this.nextMonthNode = this.dialogNode.querySelector(".next-month");
+          this.nextYearNode = this.dialogNode.querySelector(".next-year");
+
+          this.okButtonNode =
+            this.dialogNode.querySelector('button[value="ok"]');
+          this.cancelButtonNode = this.dialogNode.querySelector(
+            'button[value="cancel"]'
+          );
+
+          this.tbodyNode = this.dialogNode.querySelector("table.dates tbody");
+
+          this.lastRowNode = null;
+
+          this.days = [];
+
+          this.focusDay = new Date();
+          this.selectedDay = new Date(0, 0, 1);
+
+          this.isMouseDownOnBackground = false;
+
+          this.comboboxNode.addEventListener(
+            "keydown",
+            this.onComboboxKeyDown.bind(this)
+          );
+          this.comboboxNode.addEventListener(
+            "click",
+            this.onComboboxClick.bind(this)
+          );
+          this.comboboxNode.addEventListener(
+            "focus",
+            this.onComboboxFocus.bind(this)
+          );
+          this.comboboxNode.addEventListener(
+            "blur",
+            this.onComboboxBlur.bind(this)
+          );
+
+          this.buttonNode.addEventListener(
+            "keydown",
+            this.onButtonKeyDown.bind(this)
+          );
+          this.buttonNode.addEventListener(
+            "click",
+            this.onButtonClick.bind(this)
+          );
+
+          this.okButtonNode.addEventListener(
+            "click",
+            this.onOkButton.bind(this)
+          );
+          this.okButtonNode.addEventListener(
+            "keydown",
+            this.onOkButton.bind(this)
+          );
+
+          this.cancelButtonNode.addEventListener(
+            "click",
+            this.onCancelButton.bind(this)
+          );
+          this.cancelButtonNode.addEventListener(
+            "keydown",
+            this.onCancelButton.bind(this)
+          );
+
+          this.prevMonthNode.addEventListener(
+            "click",
+            this.onPreviousMonthButton.bind(this)
+          );
+          this.nextMonthNode.addEventListener(
+            "click",
+            this.onNextMonthButton.bind(this)
+          );
+          this.prevYearNode.addEventListener(
+            "click",
+            this.onPreviousYearButton.bind(this)
+          );
+          this.nextYearNode.addEventListener(
+            "click",
+            this.onNextYearButton.bind(this)
+          );
+
+          this.prevMonthNode.addEventListener(
+            "keydown",
+            this.onPreviousMonthButton.bind(this)
+          );
+          this.nextMonthNode.addEventListener(
+            "keydown",
+            this.onNextMonthButton.bind(this)
+          );
+          this.prevYearNode.addEventListener(
+            "keydown",
+            this.onPreviousYearButton.bind(this)
+          );
+          this.nextYearNode.addEventListener(
+            "keydown",
+            this.onNextYearButton.bind(this)
+          );
+
+          document.body.addEventListener(
+            "mouseup",
+            this.onBackgroundMouseUp.bind(this),
+            true
+          );
+
+          // Create Grid of Dates
+
+          this.tbodyNode.innerHTML = "";
+          for (var i = 0; i < 6; i++) {
+            var row = this.tbodyNode.insertRow(i);
+            this.lastRowNode = row;
+            for (var j = 0; j < 7; j++) {
+              var cell = document.createElement("td");
+
+              cell.setAttribute("tabindex", "-1");
+              cell.addEventListener("click", this.onDayClick.bind(this));
+              cell.addEventListener("keydown", this.onDayKeyDown.bind(this));
+              cell.addEventListener("focus", this.onDayFocus.bind(this));
+
+              cell.textContent = "-1";
+
+              row.appendChild(cell);
+              this.days.push(cell);
+            }
+          }
+
+          this.updateGrid();
+          this.close(false);
+        }
+
+        isSameDay(day1, day2) {
+          return (
+            day1.getFullYear() == day2.getFullYear() &&
+            day1.getMonth() == day2.getMonth() &&
+            day1.getDate() == day2.getDate()
+          );
+        }
+
+        isNotSameMonth(day1, day2) {
+          return (
+            day1.getFullYear() != day2.getFullYear() ||
+            day1.getMonth() != day2.getMonth()
+          );
+        }
+
+        updateGrid() {
+          var i, flag;
+          var fd = this.focusDay;
+
+          this.monthYearNode.textContent =
+            this.monthLabels[fd.getMonth()] + " " + fd.getFullYear();
+
+          var firstDayOfMonth = new Date(fd.getFullYear(), fd.getMonth(), 1);
+          var dayOfWeek = firstDayOfMonth.getDay();
+
+          firstDayOfMonth.setDate(firstDayOfMonth.getDate() - dayOfWeek);
+
+          var d = new Date(firstDayOfMonth);
+
+          for (i = 0; i < this.days.length; i++) {
+            flag = d.getMonth() != fd.getMonth();
+            this.updateDate(
+              this.days[i],
+              flag,
+              d,
+              this.isSameDay(d, this.selectedDay)
+            );
+            d.setDate(d.getDate() + 1);
+
+            // Hide last row if all disabled dates
+            if (i === 35) {
+              if (flag) {
+                this.lastRowNode.style.visibility = "hidden";
+              } else {
+                this.lastRowNode.style.visibility = "visible";
+              }
+            }
+          }
+        }
+
+        setFocusDay(flag) {
+          if (typeof flag !== "boolean") {
+            flag = true;
+          }
+
+          var fd = this.focusDay;
+          var getDayFromDataDateAttribute = this.getDayFromDataDateAttribute;
+
+          function checkDay(domNode) {
+            var d = getDayFromDataDateAttribute(domNode);
+
+            domNode.setAttribute("tabindex", "-1");
+            if (this.isSameDay(d, fd)) {
+              domNode.setAttribute("tabindex", "0");
+              if (flag) {
+                domNode.focus();
+              }
+            }
+          }
+
+          this.days.forEach(checkDay.bind(this));
+        }
+
+        open() {
+          this.dialogNode.style.display = "block";
+          this.dialogNode.style.zIndex = 2;
+
+          this.comboboxNode.setAttribute("aria-expanded", "true");
+          this.buttonNode.classList.add("open");
+          this.getDateFromCombobox();
+          this.updateGrid();
+        }
+
+        isOpen() {
+          return window.getComputedStyle(this.dialogNode).display !== "none";
+        }
+
+        close(flag) {
+          if (typeof flag !== "boolean") {
+            // Default is to move focus to combobox
+            flag = true;
+          }
+
+          this.setMessage("");
+          this.dialogNode.style.display = "none";
+          this.comboboxNode.setAttribute("aria-expanded", "false");
+          this.buttonNode.classList.remove("open");
+
+          if (flag) {
+            this.comboboxNode.focus();
+          }
+        }
+
+        onOkButton(event) {
+          var flag = false;
+
+          switch (event.type) {
+            case "keydown":
+              switch (event.key) {
+                case "Tab":
+                  if (!event.shiftKey) {
+                    this.prevYearNode.focus();
+                    flag = true;
+                  }
+                  break;
+
+                case "Esc":
+                case "Escape":
+                  this.close();
+                  flag = true;
+                  break;
+
+                default:
+                  break;
+              }
+              break;
+
+            case "click":
+              this.setComboboxDate();
+              this.close();
+              flag = true;
+              break;
+
+            default:
+              break;
+          }
+
+          if (flag) {
+            event.stopPropagation();
+            event.preventDefault();
+          }
+        }
+
+        onCancelButton(event) {
+          var flag = false;
+
+          switch (event.type) {
+            case "keydown":
+              switch (event.key) {
+                case "Esc":
+                case "Escape":
+                  this.close();
+                  flag = true;
+                  break;
+
+                default:
+                  break;
+              }
+              break;
+
+            case "click":
+              this.close();
+              flag = true;
+              break;
+
+            default:
+              break;
+          }
+
+          if (flag) {
+            event.stopPropagation();
+            event.preventDefault();
+          }
+        }
+
+        onNextYearButton(event) {
+          var flag = false;
+
+          switch (event.type) {
+            case "keydown":
+              switch (event.key) {
+                case "Esc":
+                case "Escape":
+                  this.close();
+                  flag = true;
+                  break;
+
+                case "Enter":
+                  this.moveToNextYear();
+                  this.setFocusDay(false);
+                  flag = true;
+                  break;
+              }
+
+              break;
+
+            case "click":
+              this.moveToNextYear();
+              this.setFocusDay(false);
+              break;
+
+            default:
+              break;
+          }
+
+          if (flag) {
+            event.stopPropagation();
+            event.preventDefault();
+          }
+        }
+
+        onPreviousYearButton(event) {
+          var flag = false;
+
+          switch (event.type) {
+            case "keydown":
+              switch (event.key) {
+                case "Enter":
+                  this.moveToPreviousYear();
+                  this.setFocusDay(false);
+                  flag = true;
+                  break;
+
+                case "Tab":
+                  if (event.shiftKey) {
+                    this.okButtonNode.focus();
+                    flag = true;
+                  }
+                  break;
+
+                case "Esc":
+                case "Escape":
+                  this.close();
+                  flag = true;
+                  break;
+
+                default:
+                  break;
+              }
+
+              break;
+
+            case "click":
+              this.moveToPreviousYear();
+              this.setFocusDay(false);
+              break;
+
+            default:
+              break;
+          }
+
+          if (flag) {
+            event.stopPropagation();
+            event.preventDefault();
+          }
+        }
+
+        onNextMonthButton(event) {
+          var flag = false;
+
+          switch (event.type) {
+            case "keydown":
+              switch (event.key) {
+                case "Esc":
+                case "Escape":
+                  this.close();
+                  flag = true;
+                  break;
+
+                case "Enter":
+                  this.moveToNextMonth();
+                  this.setFocusDay(false);
+                  flag = true;
+                  break;
+              }
+
+              break;
+
+            case "click":
+              this.moveToNextMonth();
+              this.setFocusDay(false);
+              break;
+
+            default:
+              break;
+          }
+
+          if (flag) {
+            event.stopPropagation();
+            event.preventDefault();
+          }
+        }
+
+        onPreviousMonthButton(event) {
+          var flag = false;
+
+          switch (event.type) {
+            case "keydown":
+              switch (event.key) {
+                case "Esc":
+                case "Escape":
+                  this.close();
+                  flag = true;
+                  break;
+
+                case "Enter":
+                  this.moveToPreviousMonth();
+                  this.setFocusDay(false);
+                  flag = true;
+                  break;
+              }
+
+              break;
+
+            case "click":
+              this.moveToPreviousMonth();
+              this.setFocusDay(false);
+              flag = true;
+              break;
+
+            default:
+              break;
+          }
+
+          if (flag) {
+            event.stopPropagation();
+            event.preventDefault();
+          }
+        }
+
+        moveFocusToDay(day) {
+          var d = this.focusDay;
+
+          this.focusDay = day;
+
+          if (
+            d.getMonth() != this.focusDay.getMonth() ||
+            d.getYear() != this.focusDay.getYear()
+          ) {
+            this.updateGrid();
+          }
+          this.setFocusDay();
+        }
+
+        moveToNextYear() {
+          this.focusDay.setFullYear(this.focusDay.getFullYear() + 1);
+          this.updateGrid();
+        }
+
+        moveToPreviousYear() {
+          this.focusDay.setFullYear(this.focusDay.getFullYear() - 1);
+          this.updateGrid();
+        }
+
+        moveToNextMonth() {
+          this.focusDay.setMonth(this.focusDay.getMonth() + 1);
+          this.updateGrid();
+        }
+
+        moveToPreviousMonth() {
+          this.focusDay.setMonth(this.focusDay.getMonth() - 1);
+          this.updateGrid();
+        }
+
+        moveFocusToNextDay() {
+          var d = new Date(this.focusDay);
+          d.setDate(d.getDate() + 1);
+          this.moveFocusToDay(d);
+        }
+
+        moveFocusToNextWeek() {
+          var d = new Date(this.focusDay);
+          d.setDate(d.getDate() + 7);
+          this.moveFocusToDay(d);
+        }
+
+        moveFocusToPreviousDay() {
+          var d = new Date(this.focusDay);
+          d.setDate(d.getDate() - 1);
+          this.moveFocusToDay(d);
+        }
+
+        moveFocusToPreviousWeek() {
+          var d = new Date(this.focusDay);
+          d.setDate(d.getDate() - 7);
+          this.moveFocusToDay(d);
+        }
+
+        moveFocusToFirstDayOfWeek() {
+          var d = new Date(this.focusDay);
+          d.setDate(d.getDate() - d.getDay());
+          this.moveFocusToDay(d);
+        }
+
+        moveFocusToLastDayOfWeek() {
+          var d = new Date(this.focusDay);
+          d.setDate(d.getDate() + (6 - d.getDay()));
+          this.moveFocusToDay(d);
+        }
+
+        // Day methods
+
+        isDayDisabled(domNode) {
+          return domNode.classList.contains("disabled");
+        }
+
+        getDayFromDataDateAttribute(domNode) {
+          var parts = domNode.getAttribute("data-date").split("-");
+          return new Date(parts[0], parseInt(parts[1]) - 1, parts[2]);
+        }
+
+        updateDate(domNode, disable, day, selected) {
+          var d = day.getDate().toString();
+          if (day.getDate() <= 9) {
+            d = "0" + d;
+          }
+
+          var m = day.getMonth() + 1;
+          if (day.getMonth() < 9) {
+            m = "0" + m;
+          }
+
+          domNode.setAttribute("tabindex", "-1");
+          domNode.removeAttribute("aria-selected");
+          domNode.setAttribute(
+            "data-date",
+            day.getFullYear() + "-" + m + "-" + d
+          );
+
+          if (disable) {
+            domNode.classList.add("disabled");
+            domNode.textContent = "";
+          } else {
+            domNode.classList.remove("disabled");
+            domNode.textContent = day.getDate();
+            if (selected) {
+              domNode.setAttribute("aria-selected", "true");
+              domNode.setAttribute("tabindex", "0");
+            }
+          }
+        }
+
+        updateSelected(domNode) {
+          for (var i = 0; i < this.days.length; i++) {
+            var day = this.days[i];
+            if (day === domNode) {
+              day.setAttribute("aria-selected", "true");
+            } else {
+              day.removeAttribute("aria-selected");
+            }
+          }
+        }
+
+        onDayKeyDown(event) {
+          var flag = false;
+
+          switch (event.key) {
+            case "Esc":
+            case "Escape":
+              this.close();
+              break;
+
+            case " ":
+              this.updateSelected(event.currentTarget);
+              this.setComboboxDate(event.currentTarget);
+              flag = true;
+              break;
+
+            case "Enter":
+              this.setComboboxDate(event.currentTarget);
+              this.close();
+              break;
+
+            case "Tab":
+              this.cancelButtonNode.focus();
+              if (event.shiftKey) {
+                this.nextYearNode.focus();
+              }
+              this.setMessage("");
+              flag = true;
+              break;
+
+            case "Right":
+            case "ArrowRight":
+              this.moveFocusToNextDay();
+              flag = true;
+              break;
+
+            case "Left":
+            case "ArrowLeft":
+              this.moveFocusToPreviousDay();
+              flag = true;
+              break;
+
+            case "Down":
+            case "ArrowDown":
+              this.moveFocusToNextWeek();
+              flag = true;
+              break;
+
+            case "Up":
+            case "ArrowUp":
+              this.moveFocusToPreviousWeek();
+              flag = true;
+              break;
+
+            case "PageUp":
+              if (event.shiftKey) {
+                this.moveToPreviousYear();
+              } else {
+                this.moveToPreviousMonth();
+              }
+              this.setFocusDay();
+              flag = true;
+              break;
+
+            case "PageDown":
+              if (event.shiftKey) {
+                this.moveToNextYear();
+              } else {
+                this.moveToNextMonth();
+              }
+              this.setFocusDay();
+              flag = true;
+              break;
+
+            case "Home":
+              this.moveFocusToFirstDayOfWeek();
+              flag = true;
+              break;
+
+            case "End":
+              this.moveFocusToLastDayOfWeek();
+              flag = true;
+              break;
+          }
+
+          if (flag) {
+            event.stopPropagation();
+            event.preventDefault();
+          }
+        }
+
+        onDayClick(event) {
+          if (!this.isDayDisabled(event.currentTarget)) {
+            this.setComboboxDate(event.currentTarget);
+            this.close();
+          }
+
+          event.stopPropagation();
+          event.preventDefault();
+        }
+
+        onDayFocus() {
+          this.setMessage(this.messageCursorKeys);
+        }
+
+        // Combobox methods
+
+        setComboboxDate(domNode) {
+          var d = this.focusDay;
+
+          if (domNode) {
+            d = this.getDayFromDataDateAttribute(domNode);
+          }
+
+          this.comboboxNode.value =
+            d.getMonth() + 1 + "/" + d.getDate() + "/" + d.getFullYear();
+        }
+
+        getDateFromCombobox() {
+          var parts = this.comboboxNode.value.split("/");
+
+          if (
+            parts.length === 3 &&
+            Number.isInteger(parseInt(parts[0])) &&
+            Number.isInteger(parseInt(parts[1])) &&
+            Number.isInteger(parseInt(parts[2]))
+          ) {
+            this.focusDay = new Date(
+              parseInt(parts[2]),
+              parseInt(parts[0]) - 1,
+              parseInt(parts[1])
+            );
+            this.selectedDay = new Date(this.focusDay);
+          } else {
+            // If not a valid date (MM/DD/YY) initialize with todays date
+            this.focusDay = new Date();
+            this.selectedDay = new Date(0, 0, 1);
+          }
+        }
+
+        setMessage(str) {
+          function setMessageDelayed() {
+            this.messageNode.textContent = str;
+          }
+
+          if (str !== this.lastMessage) {
+            setTimeout(setMessageDelayed.bind(this), 200);
+            this.lastMessage = str;
+          }
+        }
+
+        onComboboxKeyDown(event) {
+          var flag = false;
+
+          if (event.ctrlKey || event.shiftKey) {
+            return;
+          }
+
+          switch (event.key) {
+            case "Down":
+            case "ArrowDown":
+              this.open();
+              this.setFocusDay();
+              flag = true;
+              break;
+
+            case "Esc":
+            case "Escape":
+              if (this.isOpen()) {
+                this.close(false);
+              } else {
+                this.comboboxNode.value = "";
+              }
+              this.option = null;
+              flag = true;
+              break;
+
+            case "Tab":
+              this.close(false);
+              break;
+
+            default:
+              break;
+          }
+
+          if (flag) {
+            event.stopPropagation();
+            event.preventDefault();
+          }
+        }
+
+        onComboboxClick(event) {
+          if (this.isOpen()) {
+            this.close(false);
+          } else {
+            this.open();
+          }
+
+          event.stopPropagation();
+          event.preventDefault();
+        }
+
+        onComboboxFocus(event) {
+          console.log("event", event.currentTarget);
+          event.currentTarget.parentNode.classList.add("focus");
+        }
+
+        onComboboxBlur(event) {
+          event.currentTarget.parentNode.classList.remove("focus");
+        }
+
+        onButtonKeyDown(event) {
+          if (event.key === "Enter" || event.key === " ") {
+            this.open();
+            this.setFocusDay();
+
+            event.stopPropagation();
+            event.preventDefault();
+          }
+        }
+
+        onButtonClick(event) {
+          if (this.isOpen()) {
+            this.close();
+          } else {
+            this.open();
+            this.setFocusDay();
+          }
+
+          event.stopPropagation();
+          event.preventDefault();
+        }
+
+        onBackgroundMouseUp(event) {
+          if (
+            !this.comboboxNode.contains(event.target) &&
+            !this.buttonNode.contains(event.target) &&
+            !this.dialogNode.contains(event.target)
+          ) {
+            if (this.isOpen()) {
+              this.close(false);
+              event.stopPropagation();
+              event.preventDefault();
+            }
+          }
+        }
+      }
+
+      // Initialize menu button date picker
+
+      window.addEventListener("load", function () {
+        var comboboxDatePickers = document.querySelectorAll(
+          ".combobox-datepicker"
+        );
+        comboboxDatePickers.forEach(function (dp) {
+          new ComboboxDatePicker(dp);
+        });
+      });
+    </script>
+  </body>
+</html>
